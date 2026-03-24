@@ -3,7 +3,7 @@ import AddTransactionForm from "./components/AddTransactionForm/AddTransactionFo
 
 function App() {
   return (
-    <div className="dark font-weight-medium min-h-screen bg-background text-foreground">
+    <div className="font-weight-medium min-h-screen bg-background text-foreground">
       <div className="grid grid-cols-3 gap-4 max-w-6xl mx-auto dark">
         <Card>
           <CardHeader>
