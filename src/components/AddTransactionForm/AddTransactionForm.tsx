@@ -21,10 +21,8 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { format } from "date-fns";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
 import { Button } from "../ui/button";
 import {
   CATEGORIES,
@@ -42,6 +40,8 @@ import {
 } from "@/components/ui/popover";
 
 export default function AddTransactionForm() {
+  const [dateOpen, setDateOpen] = useState(false);
+
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(expenseSchema),
     defaultValues: {
@@ -54,6 +54,7 @@ export default function AddTransactionForm() {
   });
 
   const selectedDate = form.watch("date");
+
   function onSubmit(data: TransactionFormData) {
     console.log(data);
   }
@@ -62,10 +63,16 @@ export default function AddTransactionForm() {
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <FieldSet>
         <FieldGroup>
+          {/* WALLET */}
           <Field data-invalid={!!form.formState.errors.wallet}>
             <FieldLabel htmlFor="wallet">Wallet</FieldLabel>
-            <Combobox items={WALLETS}>
-              <ComboboxInput placeholder="Select a wallet">
+            <Combobox
+              items={WALLETS}
+              onValueChange={(val) =>
+                form.setValue("wallet", val as string, { shouldValidate: true })
+              }
+            >
+              <ComboboxInput id="wallet" placeholder="Select a wallet">
                 <InputGroupAddon>
                   <Wallet />
                 </InputGroupAddon>
@@ -84,10 +91,18 @@ export default function AddTransactionForm() {
             <FieldError errors={[form.formState.errors.wallet]} />
           </Field>
 
+          {/* CATEGORY */}
           <Field data-invalid={!!form.formState.errors.category}>
             <FieldLabel htmlFor="category">Category</FieldLabel>
-            <Combobox items={CATEGORIES}>
-              <ComboboxInput placeholder="Select a category">
+            <Combobox
+              items={CATEGORIES}
+              onValueChange={(val) =>
+                form.setValue("category", val as string, {
+                  shouldValidate: true,
+                })
+              }
+            >
+              <ComboboxInput id="category" placeholder="Select a category">
                 <InputGroupAddon>
                   <List />
                 </InputGroupAddon>
@@ -103,15 +118,22 @@ export default function AddTransactionForm() {
                 </ComboboxList>
               </ComboboxContent>
             </Combobox>
+            <FieldError errors={[form.formState.errors.category]} />
           </Field>
 
+          {/* AMOUNT */}
           <Field data-invalid={!!form.formState.errors.amount}>
             <FieldLabel htmlFor="amount">Amount</FieldLabel>
             <InputGroup>
               <InputGroupAddon>
                 <InputGroupText>$</InputGroupText>
               </InputGroupAddon>
-              <InputGroupInput placeholder="0" />
+              <InputGroupInput
+                id="amount"
+                type="number"
+                placeholder="0"
+                {...form.register("amount", { valueAsNumber: true })}
+              />
               <InputGroupAddon align="inline-end">
                 <InputGroupText>COP</InputGroupText>
               </InputGroupAddon>
@@ -119,16 +141,22 @@ export default function AddTransactionForm() {
             <FieldError errors={[form.formState.errors.amount]} />
           </Field>
 
+          {/* DESCRIPTION */}
           <Field>
             <FieldLabel htmlFor="description">Description</FieldLabel>
             <InputGroup>
-              <InputGroupTextarea placeholder="Add a description (optional)" />
+              <InputGroupTextarea
+                id="description"
+                placeholder="Add a description (optional)"
+                {...form.register("description")}
+              />
             </InputGroup>
           </Field>
 
+          {/* DATE */}
           <Field data-invalid={!!form.formState.errors.date}>
-            <FieldLabel htmlFor="date">Date</FieldLabel>
-            <Popover>
+            <FieldLabel htmlFor="date-trigger">Date</FieldLabel>
+            <Popover open={dateOpen} onOpenChange={setDateOpen}>
               <PopoverTrigger asChild>
                 <Button
                   id="date-trigger"
@@ -147,11 +175,12 @@ export default function AddTransactionForm() {
                 <Calendar
                   mode="single"
                   selected={selectedDate}
-                  onSelect={(date) =>
+                  onSelect={(date) => {
                     form.setValue("date", date as Date, {
                       shouldValidate: true,
-                    })
-                  }
+                    });
+                    setDateOpen(false);
+                  }}
                   disabled={(date) => date > new Date()}
                 />
               </PopoverContent>
@@ -160,6 +189,14 @@ export default function AddTransactionForm() {
           </Field>
         </FieldGroup>
       </FieldSet>
+
+      <Button
+        type="submit"
+        className="w-full mt-6"
+        disabled={form.formState.isSubmitting}
+      >
+        {form.formState.isSubmitting ? "Saving..." : "Add Transaction"}
+      </Button>
     </form>
   );
 }
