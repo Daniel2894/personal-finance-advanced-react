@@ -23,7 +23,7 @@ import {
 import { format } from "date-fns";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 import {
   CATEGORIES,
   expenseSchema,
@@ -39,7 +39,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export default function AddTransactionForm() {
+export default function ExpenseForm() {
   const [dateOpen, setDateOpen] = useState(false);
 
   const form = useForm<TransactionFormData>({

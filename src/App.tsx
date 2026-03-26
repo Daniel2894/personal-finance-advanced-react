@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import AddTransactionForm from "./components/AddTransactionForm/AddTransactionForm";
+import ExpenseForm from "./components/ExpenseForm";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
             <CardTitle>Add Transaction</CardTitle>
           </CardHeader>
           <CardContent>
-            <AddTransactionForm />
+            <ExpenseForm />
           </CardContent>
         </Card>
         <Card className="self-start">

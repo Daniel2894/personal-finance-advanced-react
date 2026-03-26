@@ -17,6 +17,18 @@ export const CATEGORIES = [
   "Otros",
 ] as const;
 
+type Wallet = (typeof WALLETS)[number];
+type Category = (typeof CATEGORIES)[number];
+
+export type Expense = {
+  id: string;
+  wallet: Wallet;
+  category: Category;
+  amount: number;
+  description: string;
+  date: string;
+};
+
 export const expenseSchema = z.object({
   wallet: z.string("Select a wallet").min(1, "Select a wallet"),
 
